@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       label: "Accueil",
     ),
     BottomNavigationBarItem(
-      icon: Icon(IconlyBold.heart),
+      icon: Icon(IconlyBold.bookmark),
       label: "Favoris",
     ),
     BottomNavigationBarItem(
@@ -81,8 +81,8 @@ class _HomePageState extends State<HomePage> {
       label: "Réservations",
     ),
     BottomNavigationBarItem(
-      icon: Icon(IconlyBold.profile),
-      label: "profile",
+      icon: Icon(IconlyBold.setting),
+      label: "Paramètres",
     ),
   ];
 }
