@@ -9,6 +9,7 @@ import 'package:parkswift/inscription.dart';
 import 'package:parkswift/home_screen.dart';
 
 class Connexion extends StatelessWidget {
+  var _obscureText = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +44,7 @@ class Connexion extends StatelessWidget {
               children: [
                 // Zone pour ajouter des boutons, champs de texte, etc.
                 DealyedAniamtion(
-                  delay: 1000,
+                  delay: 10,
                   child: Container(
                     height: 200,
                     child: Container(
@@ -76,6 +77,43 @@ class Connexion extends StatelessWidget {
                   ),
                 ),
 
+                DealyedAniamtion(
+                  delay: 10,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+
+                DealyedAniamtion(
+                  delay: 10,
+                  child: TextField(
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      labelText: 'Mot de passe',
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.visibility,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          //methode pour rafraichir le widget lorsqu'on appui sur l'oiel
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
                 /*BOUTONS*/
 
                 TextButton(
@@ -88,8 +126,11 @@ class Connexion extends StatelessWidget {
                     );
                     // Logique pour réinitialiser le mot de passe, par exemple
                   },
-                  child: Text('Pas de compte? Inscris-toi',
-                  style: TextStyle(color: const Color.fromARGB(255, 184, 51, 42)),),
+                  child: Text(
+                    'Pas de compte? Inscris-toi',
+                    style: TextStyle(
+                        color: const Color.fromARGB(255, 184, 51, 42)),
+                  ),
                 ),
                 DealyedAniamtion(
                   delay: 1000,
@@ -101,7 +142,7 @@ class Connexion extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: d_red,
+                        backgroundColor: d_red,
                         shape: StadiumBorder(),
                         /*shape permet de mettre les bordures du bouton*/
                         padding: EdgeInsets.all(13),
@@ -126,8 +167,10 @@ class Connexion extends StatelessWidget {
                   onPressed: () {
                     // Logique pour réinitialiser le mot de passe, par exemple
                   },
-                  child: Text('Mot de passe oublié ?',
-                  style: TextStyle(color: Colors.black),),
+                  child: Text(
+                    'Mot de passe oublié ?',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
               ],
             ),
@@ -136,6 +179,8 @@ class Connexion extends StatelessWidget {
       ),
     );
   }
+
+  void setState(Null Function() param0) {}
 }
 
 

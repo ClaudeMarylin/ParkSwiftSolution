@@ -23,12 +23,11 @@ class HomeTap extends StatelessWidget {
             child: Column(
               children: [
                 CustomTextFormField(
-                    hint: "Rechercher",
-                    prefixIcon: IconlyBroken.search,
-                    filled: true,
-                    enabled: true,
-                  ),
-                
+                  hint: "Rechercher",
+                  prefixIcon: IconlyBroken.search,
+                  filled: true,
+                  enabled: true,
+                ),
                 GestureDetector(
                   onTap: () {
                     // Navigator.push(
@@ -46,11 +45,10 @@ class HomeTap extends StatelessWidget {
                         size: 30,
                       ),
                       onPressed: () {
-                       Navigator.push(
-                     context,
-                    MaterialPageRoute(
-                    builder: (context) => Notifications())
-                    );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Notifications()));
                       },
                     ),
                   ),

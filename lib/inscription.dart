@@ -1,5 +1,5 @@
 // ignore_for_file: unused_import
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,8 +7,16 @@ import 'package:parkswift/delaye_animation.dart';
 import 'package:parkswift/main.dart';
 import 'package:parkswift/connexion.dart';
 
+// const supabaseUrl = 'https://ussrntnvxurlkukwhiej.supabase.co';
+// const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+
+// Future<void> main() async {
+//   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+//   runApp(MyApp());
+// }
+
 class InscriptionContent extends StatelessWidget {
-  // declation de variable pour rendre me mdp invisible
+  // declation de variable pour rendre le mdp invisible
   var _obscureText = true;
 
   @override
@@ -21,7 +29,7 @@ class InscriptionContent extends StatelessWidget {
         children: [
           /*nom*/
           DealyedAniamtion(
-            delay: 1000,
+            delay: 10,
             child: TextField(
               decoration: InputDecoration(
                 labelText: 'Nom d\'utilisateur',
@@ -33,7 +41,7 @@ class InscriptionContent extends StatelessWidget {
           ),
           /*Email*/
           DealyedAniamtion(
-            delay: 1000,
+            delay: 10,
             child: TextField(
               decoration: InputDecoration(
                 labelText: 'Email',
@@ -45,7 +53,7 @@ class InscriptionContent extends StatelessWidget {
           ),
           /*Téléphone*/
           DealyedAniamtion(
-            delay: 1000,
+            delay: 10,
             child: TextField(
               decoration: InputDecoration(
                 labelText: 'Téléphone',
@@ -58,7 +66,7 @@ class InscriptionContent extends StatelessWidget {
 
           /*Mot de passe*/
           DealyedAniamtion(
-            delay: 1000,
+            delay: 10,
             child: TextField(
               obscureText: _obscureText,
               decoration: InputDecoration(
@@ -125,7 +133,7 @@ class Inscription extends StatelessWidget {
               children: [
                 // Zone pour ajouter des boutons, champs de texte, etc.
                 DealyedAniamtion(
-                  delay: 1000,
+                  delay: 10,
                   child: Container(
                     height: 200,
                     child: Container(
@@ -150,13 +158,13 @@ class Inscription extends StatelessWidget {
                   ),
                 ),
 
-                InscriptionContent(),
+                // InscriptionContent(),
                 SizedBox(height: 100),
                 DealyedAniamtion(
-                  delay: 1200,
+                  delay: 10,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: d_red,
+                      backgroundColor: d_red,
                       //shape: StadiumBorder()
                       padding: EdgeInsets.symmetric(
                         vertical: 13,
@@ -169,9 +177,7 @@ class Inscription extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    onPressed: () {
-                      
-                    },
+                    onPressed: () {},
                   ),
                 ),
                 /*BOUTONS*/
@@ -180,11 +186,12 @@ class Inscription extends StatelessWidget {
                   onPressed: () {
                     // Logique pour réinitialiser le mot de passe, par exemple
                   },
-                  child: Text('Se connecter via un réseau social',
-                 style: GoogleFonts.poppins(
-                        color: Colors.black,
+                  child: Text(
+                    'Se connecter via un réseau social',
+                    style: GoogleFonts.poppins(
+                      color: Colors.black,
+                    ),
                   ),
-                ),
                 ),
               ],
             ),

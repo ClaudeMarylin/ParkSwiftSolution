@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:parkswift/Home.dart';
-import 'package:parkswift/Profile.dart';
+import 'package:parkswift/plus.dart';
 import 'package:parkswift/favorite.dart';
 import 'package:parkswift/main.dart';
 import 'package:parkswift/reservation.dart';
@@ -29,9 +29,9 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> taps = [
     HomeTap(),
-    ProfileTap(),
-    ReservationTap(),
     FavoriteTap(),
+    ReservationTap(),
+    PlusTap(),
     
   ];
 
@@ -81,8 +81,8 @@ class _HomePageState extends State<HomePage> {
       label: "Réservations",
     ),
     BottomNavigationBarItem(
-      icon: Icon(IconlyBold.setting),
-      label: "Paramètres",
+      icon: Icon(Icons.menu),
+      label: "Plus",
     ),
   ];
 }

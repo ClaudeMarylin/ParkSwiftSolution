@@ -1,11 +1,13 @@
 // ignore_for_file: unused_import
 
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:parkswift/delaye_animation.dart';
 import 'package:parkswift/main.dart';
 import 'package:parkswift/connexion.dart';
+
 
 class WelcomePage extends StatelessWidget {
   @override
@@ -20,21 +22,21 @@ class WelcomePage extends StatelessWidget {
         child: Column(
           children: [
             DealyedAniamtion(
-              delay: 1500,
+              delay: 10,
               child: Container(
                 height: 170,
                 child: Image.asset('images/parkswift.png'),
               ),
             ),
             DealyedAniamtion(
-              delay: 2500,
+              delay: 10,
               child: Container(
                 height: 400,
                 child: Image.asset('images/confus.jpg'),
               ),
             ),
             DealyedAniamtion(
-              delay: 3500,
+              delay: 10,
               child: Container(
                 margin: const EdgeInsets.only(top: 30, bottom: 20),
                 child: Text(
@@ -45,12 +47,12 @@ class WelcomePage extends StatelessWidget {
               ),
             ),
             DealyedAniamtion(
-              delay: 4500,
+              delay: 10,
               child: Container(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: d_red,
+                    backgroundColor: d_red,
                     shape: StadiumBorder(),
                     /*shape permet de mettre les bordures du bouton*/
                     padding: EdgeInsets.all(13),
