@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkswift/main.dart';
 
 class Notifications extends StatelessWidget {
   const Notifications({super.key});
@@ -35,7 +36,8 @@ class CustomNotifications extends StatefulWidget {
 class _CustomNotificationsState extends State<CustomNotifications> {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Scaffold(
+      body: Row(
       children: [
         CircleAvatar(
           radius: 25,
@@ -56,12 +58,20 @@ class _CustomNotificationsState extends State<CustomNotifications> {
                   .headline5!
                   .copyWith(color: Color.fromARGB(255, 85, 84, 84)),
             ),
-            const SizedBox(height: 5,),
-            Text("New following ", style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Color.fromARGB(255, 140, 200, 201),)
-            ,)
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              "New following ",
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: Color.fromARGB(255, 140, 200, 201),
+                  ),
+            )
           ],
-        )
+        ),
       ],
+    ),
     );
+   
   }
 }
