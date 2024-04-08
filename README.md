@@ -27,7 +27,7 @@ Git branch nom-de-la-branch => créer une nouvelle branch
 
 git checkout nom-de-la-branch => aller sur une branche existante
 
-git checkout -b nom-de-la-branch => créer une branche à partir d'une bracnhe existante
+git checkout -b nom-de-la-branch => créer une branche à partir d'une branche existante
 
 git pull origin nom-de-la-branche => recupérer les doées d'une branche existante
 git clone url-ssh du projet => cloner un projet via ssh

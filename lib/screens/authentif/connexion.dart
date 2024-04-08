@@ -24,7 +24,7 @@ class Connexion extends StatelessWidget {
             top: 16.0,
             left: 16.0,
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.black,
                 size: 30,
@@ -78,7 +78,7 @@ class Connexion extends StatelessWidget {
                   delay: 0,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
-                    child: TextField(
+                    child: const TextField(
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: TextStyle(
@@ -162,7 +162,7 @@ class Connexion extends StatelessWidget {
                     // Logique pour réinitialiser le mot de passe, par exemple
                   },
                   child: RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: 'Pas de compte?',
                       style: TextStyle(color: Colors.black),
                       children: <TextSpan>[
@@ -187,9 +187,9 @@ class Connexion extends StatelessWidget {
                       onTap: () {
                         // Action lorsque le lien est cliqué
                       },
-                      child: Text(
+                      child: const Text(
                         'Mot de passe oublié ?',
-                        style: TextStyle(
+                        style:  TextStyle(
                           color: Colors.red,
                           decoration: TextDecoration.underline,
                         ),

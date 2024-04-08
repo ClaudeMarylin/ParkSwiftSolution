@@ -3,6 +3,7 @@ import 'package:comparking/screens/menuBar/details_booking.dart';
 import 'package:comparking/constants/colors.dart';
 import 'package:comparking/screens/authentif/HomePage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase/supabase.dart';
 
 class ReservationTap extends StatelessWidget {
   @override
@@ -11,7 +12,8 @@ class ReservationTap extends StatelessWidget {
       appBar: MyAppBar(),
       body: SingleChildScrollView(
           child: Column(
-        children: [Map(), Detail()],
+        children: [Map(), 
+        Detail()],
       )),
     );
   }
