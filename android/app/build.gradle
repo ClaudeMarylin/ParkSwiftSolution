@@ -26,6 +26,8 @@ android {
     namespace "com.example.comparking"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+    compileSdkVersion 34
+ 
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -49,6 +51,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        minSdkVersion 20
     }
 
     buildTypes {
@@ -58,6 +61,8 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+
 }
 
 flutter {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:comparking/constants/colors.dart';
 import 'dart:async';
 import 'package:comparking/screens/authentif/connexion.dart';
+// ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,7 +28,7 @@ class Inscription extends StatelessWidget {
             top: 16.0,
             left: 16.0,
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.black,
                 size: 30,
