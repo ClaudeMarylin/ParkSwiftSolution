@@ -44,7 +44,9 @@ dependencies:
   geolocator: ^11.0.0
   supabase_flutter: ^2.4.0
   permission_handler: ^11.3.1
-
+  google_places_flutter: ^2.0.8
+  google_api_headers: ^4.0.0
+  geocoding: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

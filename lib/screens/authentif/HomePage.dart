@@ -121,15 +121,14 @@ class _HomePageState extends State<HomePage> {
 //   }
 // }
 
-
 class HomeTap extends StatefulWidget {
   const HomeTap({Key? key});
-  
+
   // get context => null;
 
   @override
 //   void initState() {
-    
+
 //     requestLocationPermission();
 //   }
 
@@ -149,11 +148,13 @@ class _HomeTapState extends State<HomeTap> {
       _mapController; // Changer le type en GoogleMapController?
   late CameraPosition _initialCameraPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 12);
+ 
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+   
   }
 
   Future<void> _getCurrentLocation() async {
@@ -183,6 +184,8 @@ class _HomeTapState extends State<HomeTap> {
     );
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -200,6 +203,16 @@ class _HomeTapState extends State<HomeTap> {
                 // }
                 _mapController = controller;
               },
+              markers: _initialCameraPosition.target != LatLng(0, 0)
+                  ? {
+                      Marker(
+                        markerId: MarkerId("currentLocation"),
+                        position: _initialCameraPosition.target,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueRed),
+                      )
+                    }
+                  : {},
             ),
             Column(
               children: [
