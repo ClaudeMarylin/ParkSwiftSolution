@@ -119,6 +119,7 @@ class _ConnexionState extends State<Connexion> {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextField(
+                      controller: passwordController,
                       obscureText: _isObscure,
                       decoration: InputDecoration(
                         labelText: 'Mot de passe',
@@ -163,14 +164,7 @@ class _ConnexionState extends State<Connexion> {
                         'Se connecter',
                         style: TextStyle(color: Colors.black),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      },
+                      onPressed: () => signIn(),
                     ),
                   ),
                 ),

@@ -188,7 +188,7 @@ class _InscriptionState extends State<Inscription> {
                         color: Colors.white,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed:() => signUp(),
                   ),
                 ),
                 /*BOUTONS*/
