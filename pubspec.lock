@@ -244,10 +244,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_api_headers
-      sha256: "7ca5a06b0e90b756d70959252ca05127718cf2676fc2aabff3b356fb810a21fe"
+      sha256: a0685d1c1b14be689ec34fe8847bcb3e97037a40753a5aa54e8101d9e876c470
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.0"
   google_fonts:
     dependency: "direct main"
     description:
@@ -452,18 +452,18 @@ packages:
     dependency: transitive
     description:
       name: package_info_plus
-      sha256: "2c582551839386fa7ddbc7770658be7c0f87f388a4bff72066478f597c34d17f"
+      sha256: cb44f49b6e690fa766f023d5b22cac6b9affe741dd792b6ac7ad4fabe0d7b097
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "6.0.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: f49918f3433a3146047372f9d4f1f847511f2acd5cd030e1f44fe5a50036b70e
+      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "2.0.1"
   path:
     dependency: transitive
     description:
@@ -926,5 +926,5 @@ packages:
     source: hosted
     version: "2.0.0"
 sdks:
-  dart: ">=3.3.4 <4.0.0"
-  flutter: ">=3.19.6"
+  dart: ">=3.3.3 <4.0.0"
+  flutter: ">=3.19.5"
