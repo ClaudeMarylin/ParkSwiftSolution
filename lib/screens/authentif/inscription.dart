@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:comparking/main.dart';
 import 'package:comparking/widgets/DelayedAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:comparking/constants/colors.dart';
@@ -8,9 +9,35 @@ import 'package:comparking/screens/authentif/connexion.dart';
 // ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase/supabase.dart';
 
-class Inscription extends StatelessWidget {
+class Inscription extends StatefulWidget {
+  @override
+  _InscriptionState createState() => _InscriptionState();
+}
+
+class _InscriptionState extends State<Inscription> {
   var _obscureText = true;
+  TextEditingController emailController = TextEditingController() ;
+  TextEditingController passwordController = TextEditingController() ;
+  TextEditingController usernameController = TextEditingController() ;
+
+  // Inscription de l'utilisateur
+  Future<void> signUp() async{
+    try{
+      await supabase.auth.signUp(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        data: {'nom_utilisateur': usernameController.text.trim()}
+      );
+      if(!mounted) return;
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  Connexion())) ;
+    } on AuthException catch (e){
+      print(e);
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +101,7 @@ class Inscription extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                         labelText: 'Nom d\'utilisateur',
                         labelStyle: TextStyle(
@@ -88,6 +116,7 @@ class Inscription extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: TextStyle(
@@ -117,6 +146,7 @@ class Inscription extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextField(
                       obscureText: _obscureText,
+                      controller: passwordController,
                       decoration: InputDecoration(
                         labelText: 'Mot de passe',
                         labelStyle: TextStyle(

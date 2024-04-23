@@ -4,9 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:comparking/screens/authentif/HomePage.dart';
 import 'package:comparking/screens/authentif/inscription.dart';
+import 'package:comparking/main.dart';
+import 'package:supabase/supabase.dart';
 
-class Connexion extends StatelessWidget {
-  var _obscureText = true;
+class Connexion extends StatefulWidget {
+  @override
+  _ConnexionState createState() => _ConnexionState() ;
+}
+
+class _ConnexionState extends State<Connexion> {
+  bool _isObscure = true;
+  TextEditingController emailController = TextEditingController() ;
+  TextEditingController passwordController = TextEditingController() ;
+
+  // Méthode pour la connexion de l'utilisateur
+  Future<void> signIn() async{
+    try{
+      await supabase.auth.signInWithPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim()
+      );
+      if(!mounted) return;
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  HomePage())) ;
+    } on AuthException catch (e){
+      print(e);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +102,8 @@ class Connexion extends StatelessWidget {
                   delay: 0,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
-                    child: const TextField(
+                    child: TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: TextStyle(
@@ -94,7 +119,7 @@ class Connexion extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: TextField(
-                      obscureText: _obscureText,
+                      obscureText: _isObscure,
                       decoration: InputDecoration(
                         labelText: 'Mot de passe',
                         labelStyle: TextStyle(
@@ -108,7 +133,7 @@ class Connexion extends StatelessWidget {
                           onPressed: () {
                             //methode pour rafraichir le widget lorsqu'on appui sur l'oiel
                             setState(() {
-                              _obscureText = !_obscureText;
+                              _isObscure = !_isObscure;
                             });
                           },
                         ),
@@ -212,7 +237,7 @@ class Connexion extends StatelessWidget {
         ]));
   }
 
-  void setState(Null Function() param0) {}
+  //void setState(Null Function() param0) {}
 }
 
 
