@@ -29,7 +29,7 @@ class _CustomNotificationsState extends State<CustomNotifications> {
               "Succès de la connexion",
               style: Theme.of(context)
                   .textTheme
-                  .headline5!
+                  .headlineLarge!
                   .copyWith(color: Color.fromARGB(255, 85, 84, 84)),
             ),
             const SizedBox(
@@ -37,7 +37,7 @@ class _CustomNotificationsState extends State<CustomNotifications> {
             ),
             Text(
               "New following ",
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: Color.fromARGB(255, 140, 200, 201),
                   ),
             )
