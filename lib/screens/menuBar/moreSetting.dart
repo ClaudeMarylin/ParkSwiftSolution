@@ -9,8 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:comparking/screens/settings/notifications.dart';
 import 'package:comparking/constants/colors.dart';
+import 'package:extended_image/extended_image.dart';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class MoreSetting extends StatefulWidget {
   const MoreSetting({Key? key}) : super(key: key);
@@ -144,40 +145,63 @@ class _MoreSettingState extends State<MoreSetting> {
               ],
             ),
           ),
-          Expanded(
-            child: FutureBuilder<List<Json>?>(
-              future: _parkings,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Erreur: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('Aucun parking trouvé'));
-                } else {
-                  final parkings = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: parkings.length,
-                    itemBuilder: (context, index) {
-                      final parking = parkings[index];
-                      return ListTile(
-                        title: Text(parking['nom'] ?? ''),
-                        subtitle: Text(parking['imageURL'] ?? ''),
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          ),
-        ],
+
+
+// Votre code...
+
+    Expanded(
+      child: FutureBuilder<List<Json>?>(
+      future: _parkings,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Erreur: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('Aucun parking trouvé'));
+        } else {
+          final parkings = snapshot.data!;
+          return ListView.builder(
+            itemCount: parkings.length,
+            itemBuilder: (context, index) {
+              final parking = parkings[index];
+              return ListTile(
+                title: Text(parking['nom'] ?? ''),
+                subtitle: parking['imageURL'] != null && parking['imageURL'].isNotEmpty
+                    ? ExtendedImage.network(
+                  parking['imageURL'],
+                  width: 50, // Vous pouvez ajuster la taille de l'image ici
+                  height: 100,
+                  fit: BoxFit.cover,
+                  cache: true,
+                  loadStateChanged: (ExtendedImageState state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return Center(child: CircularProgressIndicator());
+                      case LoadState.completed:
+                        return state.completedWidget;
+                      case LoadState.failed:
+                        return Center(child: Icon(Icons.error));
+                    }
+                  },
+                )
+                    : Text('Aucune image de parking disponible'),
+              );
+            },
+          );
+        }
+      },
+    ),
+    ),
+
+    ],
       ),
     );
   }
 }
 
 // Fonction pour récupérer les parkings depuis la base de données
-Future<List<Map<String, dynamic>>?> fetchParkings() async {
+Future<List<Json>?> fetchParkings() async {
   try {
     return await supabase.from('parking').select('nom, imageURL');
   } on PostgrestException catch (error, stackTrace) {

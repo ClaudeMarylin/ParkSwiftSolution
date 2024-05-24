@@ -1,16 +1,26 @@
+import 'package:comparking/helper/helper_functions.dart';
+import 'package:comparking/main.dart';
 import 'package:comparking/screens/authentif/connexion.dart';
+import 'package:comparking/services/gestData/fetch_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ProfilePage extends StatelessWidget {
-  final Map<String, dynamic> userData = {
-    'name': 'John Doe',
-    'email': 'john.doe@example.com',
-    'profileImage':
-        'https://www.example.com/profile.jpg', // Remplacez par une URL valide
-    'phone': '+1234567890',
-    'address': '123, Main Street, City, Country'
-  };
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late Future<List<Map<String, dynamic>>?> _Utilisateurs;
+
+  @override
+  void initState() {
+    super.initState();
+    _Utilisateurs = fetchUtilisateurs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,10 +127,35 @@ class ProfilePage extends StatelessWidget {
                 ),
                 onTap: () {
                   // Action pour déconnecter l'utilisateur
-                  {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Connexion()));
-                  };
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Connexion()));
+                },
+              ),
+              Divider(),
+              FutureBuilder<List<Map<String, dynamic>>?>(
+                future: _Utilisateurs,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Erreur : ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('Aucun utilisateur trouvé'));
+                  } else {
+                    final utilisateurs = snapshot.data!;
+                    return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: utilisateurs.length,
+                      itemBuilder: (context, index) {
+                        final utilisateur = utilisateurs[index];
+                        return ListTile(
+                          title: Text(utilisateur['email'] ?? ''),
+                          // subtitle: Text(utilisateur['email'] ?? ''),
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ],
@@ -130,3 +165,25 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
+
+Future<List<Map<String, dynamic>>?> fetchUtilisateurs() async {
+  try {
+    return await supabase.from('user').select('email');
+  } on PostgrestException catch (error, stackTrace) {
+    logger.e(error.message, stackTrace: stackTrace);
+    logger.e(error.details);
+    return null;
+  } catch (e, stackTrace) {
+    logger.e("$e", stackTrace: stackTrace);
+    return null;
+  }
+}
+
+final Map<String, dynamic> userData = {
+  'name': 'Sharon Volley',
+  'email': 'sharon@gmail.com',
+  'profileImage':
+      'https://tse2.mm.bing.net/th?id=OIP.gi9KS8sqHTQMH_iGrjLX0wHaE8&pid=Api&P=0&h=180', // Remplacez par une URL valide
+  'phone': '+33744882679',
+  'address': '156 Avenue Le noir, 93000 Cergy'
+};

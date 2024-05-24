@@ -1,14 +1,17 @@
+import 'package:comparking/helper/helper_functions.dart';
+import 'package:comparking/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:comparking/constants/colors.dart';
 import 'package:comparking/widgets/CustomTextFormField.dart';
-import 'package:comparking/screens/menuBar/favorite.dart';
+import 'package:comparking/screens/menuBar/search.dart';
 import 'package:comparking/screens/menuBar/moreSetting.dart';
 import 'package:comparking/screens/menuBar/reservation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:comparking/services/location/location_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -32,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> taps = [
     HomeTap(),
-    FavoriteTap(),
+    SearchTap(),
     ReservationTap(),
     MoreSetting(),
   ];
@@ -85,15 +88,15 @@ class _HomePageState extends State<HomePage> {
       label: "Accueil",
     ),
     BottomNavigationBarItem(
-      icon: Icon(IconlyBold.bookmark),
-      label: "Favoris",
+      icon: Icon(IconlyBold.search),
+      label: "Recherche",
     ),
     BottomNavigationBarItem(
       icon: Icon(IconlyBold.document),
       label: "Réservations",
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.menu),
+      icon: Icon(IconlyBold.profile),
       label: "Plus",
     ),
   ];
@@ -117,13 +120,13 @@ class _HomeTapState extends State<HomeTap> {
       _mapController; // Changer le type en GoogleMapController?
   late CameraPosition _initialCameraPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 12);
- 
+Set<Marker> _ParkingMarkers = {};
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-   
+
   }
 
   Future<void> _getCurrentLocation() async {
@@ -153,7 +156,7 @@ class _HomeTapState extends State<HomeTap> {
     );
   }
 
-  
+
 
   @override
   Widget build(BuildContext context) {
@@ -224,4 +227,23 @@ class _HomeTapState extends State<HomeTap> {
     );
   }
 }
+
+
+
+
+
+Future<List<Json>?> fetchParkingsMap() async {
+  try {
+
+    return await supabase.from('parking').select('nom, imageURL, latitude, longitude');
+  } on PostgrestException catch (error, stackTrace) {
+    logger.e(error.message, stackTrace: stackTrace);
+    logger.e(error.details);
+    return null;
+  } catch (e, stackTrace) {
+    logger.e("$e", stackTrace: stackTrace);
+    return null;
+  }
+}
+
 
