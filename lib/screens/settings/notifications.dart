@@ -15,7 +15,7 @@ class Notifications extends StatelessWidget {
             children: [
               Text(
                 "Aujourd'hui",
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
               CustomNotifications(),
             ],

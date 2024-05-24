@@ -1,20 +1,40 @@
+import 'package:comparking/helper/helper_functions.dart';
+import 'package:comparking/main.dart';
 import 'package:comparking/screens/authentif/HomePage.dart';
+import 'package:comparking/screens/authentif/connexion.dart';
 import 'package:comparking/screens/authentif/inscription.dart';
+import 'package:comparking/screens/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:comparking/screens/user/profile.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:comparking/screens/settings/notifications.dart';
 import 'package:comparking/constants/colors.dart';
+import 'package:extended_image/extended_image.dart';
 
 
 
-class MoreSetting extends StatelessWidget {
-  MoreSetting({Key? key});
-  bool _isDarkMode = false; // Ajoutez cette ligne pour définir _isDarkMode
-
+class MoreSetting extends StatefulWidget {
+  const MoreSetting({Key? key}) : super(key: key);
 
   @override
+  _MoreSettingState createState() => _MoreSettingState();
+}
 
+class _MoreSettingState extends State<MoreSetting> {
+  late Future<List<Json>?> _parkings ;
+
+  @override
+  void initState() {
+    super.initState();
+    _parkings = fetchParkings();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +61,7 @@ class MoreSetting extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              // Redirigera l'utilisateur vers la page lui permettant de voir la distance entre le parking choisi et sa destination sur la carte
+              // Rediriger l'utilisateur vers la page de distance entre le parking et sa destination
             },
             icon: const Icon(
               Icons.more_horiz,
@@ -53,36 +73,35 @@ class MoreSetting extends StatelessWidget {
       body: Row(
         children: [
           Container(
-            width: 200, //largeur du menu latéral
+            width: 200, // Largeur du menu latéral
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
                 ListTile(
                   leading: const Icon(Icons.person),
-                  title: const Text('Claude Marylin'),
+                  title: Text('Mon compte'),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ProfileTap()));
-                    // action qui nous dirige vers la page de gestion du projet
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage()), // Naviguer vers la page de profil
+                    );
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.notifications_none),
                   title: Text('Notifications'),
                   onTap: () {
-                    // action qui nous dirige sur la page des notifications
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Notifications()));
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => Notifications()));
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.payment_outlined),
                   title: Text('Paiements'),
                   onTap: () {
-                    // action...
+                    // Action pour les paiements
                   },
                 ),
                 const Divider(),
@@ -102,150 +121,95 @@ class MoreSetting extends StatelessWidget {
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.settings),
-                  title: const Text('Paramètres'),
+                  leading: const Icon(Icons.settings),
+                  title: Text('Paramètres'),
                   onTap: () {},
-                )
-                // , mettre un théme noir ou clair
-                // Text('Thème:',
-                // style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                // Container(
+                //   alignment: Alignment.center,
+                //   padding: const EdgeInsets.only(bottom: 10.0),
+                //   child: ListTile(
+                //     title: Text(
+                //       "Se déconnecter",
+                //       textAlign: TextAlign.center,
+                //       style: GoogleFonts.nunito(
+                //         color: Colors.red,
+                //       ),
+                //     ),
+                //     trailing: const Icon(Icons.logout_outlined, color: Colors.red),
+                //     onTap: () {
+                //       Navigator.push(context, MaterialPageRoute(builder: (context) => Connexion()));
+                //     },
+                //   ),
                 // ),
-                // ListTile(
-                //   title: Text('Clair'),
-                //   onTap: () {
-                //     setState(() {
-                //   _isDarkMode = false;
-                //   // Changer le thème en clair
-                //   Theme.of(context).brightness = Brightness.light;
-                //   });
-                //   },
-                //   trailing: _isDarkMode
-                //   ? null
-                //   : Icon(Icons.check, color: Theme.of(context).accentColor),
-                // )
               ],
             ),
-          )
-        ],
+          ),
+
+
+// Votre code...
+
+    Expanded(
+      child: FutureBuilder<List<Json>?>(
+      future: _parkings,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Erreur: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('Aucun parking trouvé'));
+        } else {
+          final parkings = snapshot.data!;
+          return ListView.builder(
+            itemCount: parkings.length,
+            itemBuilder: (context, index) {
+              final parking = parkings[index];
+              return ListTile(
+                title: Text(parking['nom'] ?? ''),
+                subtitle: parking['imageURL'] != null && parking['imageURL'].isNotEmpty
+                    ? ExtendedImage.network(
+                  parking['imageURL'],
+                  width: 50, // Vous pouvez ajuster la taille de l'image ici
+                  height: 100,
+                  fit: BoxFit.cover,
+                  cache: true,
+                  loadStateChanged: (ExtendedImageState state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return Center(child: CircularProgressIndicator());
+                      case LoadState.completed:
+                        return state.completedWidget;
+                      case LoadState.failed:
+                        return Center(child: Icon(Icons.error));
+                    }
+                  },
+                )
+                    : Text('Aucune image de parking disponible'),
+              );
+            },
+          );
+        }
+      },
+    ),
+    ),
+
+    ],
       ),
     );
   }
 }
-  
 
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:comparking/screens/user/profile.dart';
-// import 'package:comparking/screens/settings/notifications.dart';
-// import 'package:comparking/constants/colors.dart';
-
-// class MoreSetting extends StatelessWidget {
-//   const MoreSetting({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AppBar(
-//       // appBar: AppBar(
-//       //   automaticallyImplyLeading: false,
-//       //   title: const Text("Plus"),
-//       //   actions: [
-//       //     IconButton(
-//       //       icon: const Icon(Icons.more_horiz),
-//       //       onPressed: () {
-//       //         // Action à exécuter lors de l'appui sur l'icône de points de suspension
-//       //       },
-//       //     ),
-//       //   ],
-//       // ),
-//       leading: IconButton(
-//         icon: Icon(
-//           Icons.arrow_back,
-//           color: Colors.white,
-//         ),
-//         onPressed: () {
-          
-//         },
-//       ),
-//       backgroundColor: pBlue,
-//       title: Text(
-//         "Reservations",
-//         style: GoogleFonts.nunito(
-//             color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800),
-//       ),
-//       centerTitle: true,
-//       actions: [
-//         IconButton(
-//             onPressed: () {
-//               // Redirigera le user vers la page lui permettant de voir la distance entre le parking choisi et sa destination sur la carte
-//             },
-//             icon: Icon(
-//               Icons.place,
-//               color: Colors.white,
-//             ))
-//       ],
-
-//       body: Row(
-//         children: [
-//           Container(
-//             width: 200, //largeur du menu latéral
-
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 SizedBox(height: 20),
-//                 ListTile(
-//                   leading: Icon(Icons.person),
-//                   title: Text('Claude Marylin'),
-//                   onTap: () {
-//                     Navigator.push(context,
-//                         MaterialPageRoute(builder: (context) => ProfileTap()));
-//                     // action qui nous dirige vers la page de gestion du projet
-//                   },
-//                 ),
-//                 ListTile(
-//                   leading: Icon(Icons.notifications_none),
-//                   title: Text('Notifications'),
-//                   onTap: () {
-//                     // action qui nous dirige sur la page des notifications
-//                     Navigator.push(
-//                         context,
-//                         MaterialPageRoute(
-//                             builder: (context) => Notifications()));
-//                   },
-//                 ),
-//                 ListTile(
-//                   leading: Icon(Icons.payment_outlined),
-//                   title: Text('Paiements'),
-//                   onTap: () {
-//                     // action...
-//                   },
-//                 ),
-//                 Divider(),
-//                 ListTile(
-//                   leading: Icon(Icons.security),
-//                   title: Text('Securité'),
-//                   onTap: () {},
-//                 ),
-//                 ListTile(
-//                   leading: Icon(Icons.help_center_outlined),
-//                   title: Text('Aide'),
-//                   onTap: () {},
-//                 ),
-//                 ListTile(
-//                   leading: Icon(Icons.language),
-//                   title: Text('Langues'),
-//                   onTap: () {},
-//                 ),
-//                 ListTile(
-//                   leading: Icon(Icons.settings),
-//                   title: Text('Paramètres'),
-//                   onTap: () {},
-//                 )
-//               ],
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
+// Fonction pour récupérer les parkings depuis la base de données
+Future<List<Json>?> fetchParkings() async {
+  try {
+    return await supabase.from('parking').select('nom, imageURL');
+  } on PostgrestException catch (error, stackTrace) {
+    logger.e(error.message, stackTrace: stackTrace);
+    logger.e(error.details);
+    return null;
+  } catch (e, stackTrace) {
+    logger.e("$e", stackTrace: stackTrace);
+    return null;
+  }
+}
