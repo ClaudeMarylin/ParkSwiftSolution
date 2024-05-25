@@ -90,7 +90,7 @@ class _SearchTapState extends State<SearchTap> {
               child: ListView.builder(
                 itemCount: mainParkingsList.length,
                 itemBuilder: (context, index) => ListTile(
-                  title: Text(mainParkingsList[index].nom),
+                  title: Text(mainParkingsList[index].name),
                 ),
               ),
             )
@@ -104,7 +104,7 @@ class _SearchTapState extends State<SearchTap> {
 
 Future<List<Json>?> fetchParkings() async {
   try {
-    return await supabase.from('parking').select('nom,adresse, places_disponibles, imageURL');
+    return await supabase.from('parking').select('name,adresse, places_disponibles, imageURL');
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
     logger.e(error.details);

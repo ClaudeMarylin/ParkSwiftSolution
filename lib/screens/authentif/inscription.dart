@@ -1,15 +1,13 @@
-// ignore_for_file: unused_import
-
-import 'package:comparking/main.dart';
-import 'package:comparking/widgets/DelayedAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:comparking/constants/colors.dart';
-import 'dart:async';
 import 'package:comparking/screens/authentif/connexion.dart';
-// ignore: unnecessary_import
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
 import 'package:supabase/supabase.dart';
+import 'package:comparking/Controllers/passwordController.dart';
+
+import '../../main.dart';
+import '../../widgets/DelayedAnimation.dart';
 
 class Inscription extends StatefulWidget {
   @override
@@ -17,32 +15,36 @@ class Inscription extends StatefulWidget {
 }
 
 class _InscriptionState extends State<Inscription> {
-  var _obscureText = true;
-  TextEditingController emailController = TextEditingController() ;
-  TextEditingController passwordController = TextEditingController() ;
-  TextEditingController usernameController = TextEditingController() ;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final PasswordVisibilityController passwordVisibilityController = Get.put(PasswordVisibilityController());
 
   // Inscription de l'utilisateur
-  Future<void> signUp() async{
-    try{
+  Future<void> signUp() async {
+    try {
       await supabase.auth.signUp(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        data: {'nom_utilisateur': usernameController.text.trim()}
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+          data: {
+            'name': usernameController.text.trim(),
+            'phone': phoneController.text.trim() // Ajout du numéro de téléphone
+          }
       );
-      if(!mounted) return;
+      if (!mounted) return;
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  Connexion())) ;
-    } on AuthException catch (e){
+      // Après l'inscription, vous pouvez rediriger l'utilisateur vers une autre page
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Connexion()));
+    } on AuthException catch (e) {
       print(e);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        // Image en arrière-plan
         children: [
           Image.asset(
             'assets/image/back_insc.png',
@@ -50,7 +52,6 @@ class _InscriptionState extends State<Inscription> {
             height: double.infinity,
             fit: BoxFit.cover,
           ),
-          // icone de retour à la page
           Positioned(
             top: 16.0,
             left: 16.0,
@@ -65,16 +66,14 @@ class _InscriptionState extends State<Inscription> {
               },
             ),
           ),
-          // Contenu de la page
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Zone pour ajouter des boutons, champs de texte, etc.
-                DelayedAnimation(
-                  delay: 0,
-                  child: Container(
-                    height: 200,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  DelayedAnimation(
+                    delay: 0,
                     child: Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 40,
@@ -95,116 +94,124 @@ class _InscriptionState extends State<Inscription> {
                       ),
                     ),
                   ),
-                ),
-                DelayedAnimation(
-                  delay: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: TextField(
-                      controller: usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'Nom d\'utilisateur',
-                        labelStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                DelayedAnimation(
-                  delay: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                DelayedAnimation(
-                  delay: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Téléphone',
-                        labelStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                DelayedAnimation(
-                  delay: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: TextField(
-                      obscureText: _obscureText,
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Mot de passe',
-                        labelStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.visibility,
-                            color: Colors.black,
+                  DelayedAnimation(
+                    delay: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: TextField(
+                        controller: usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'Nom d\'utilisateur',
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
+                            suffixIcon: Icon(Icons.person,
+                              color: pBlue,)
                         ),
                       ),
                     ),
                   ),
-                ),
-
-                // InscriptionContent(),
-                SizedBox(height: 100),
-
-                DelayedAnimation(
-                  delay: 0,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: dRed,
-                      //shape: StadiumBorder()
-                      padding: EdgeInsets.symmetric(
-                        vertical: 13,
-                        horizontal: 125,
+                  SizedBox(height: 20),
+                  DelayedAnimation(
+                    delay: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                            suffixIcon: Icon(Icons.mail,
+                              color: pBlue,)
+                        ),
                       ),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  DelayedAnimation(
+                    delay: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: TextField(
+                        controller: phoneController,
+                        decoration: InputDecoration(
+                          labelText: 'Téléphone',
+                          labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                            suffixIcon: Icon(Icons.phone,
+                              color: pBlue,)
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  DelayedAnimation(
+                    delay: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Obx(() {
+                        return TextField(
+                          obscureText: passwordVisibilityController.isObscure.value,
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                            labelText: 'Mot de passe',
+                            labelStyle: TextStyle(
+                              color: Colors.grey,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                passwordVisibilityController.isObscure.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: pBlue,
+                              ),
+                              onPressed: () {
+                                passwordVisibilityController.toggleVisibility();
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  SizedBox(height: 40),
+                  DelayedAnimation(
+                    delay: 0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: dRed,
+                        shape: StadiumBorder(),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 13,
+                          horizontal: 125,
+                        ),
+                      ),
+                      child: Text(
+                        'S\'inscrire',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () => signUp(),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {
+                      // Logique pour réinitialiser le mot de passe, par exemple
+                    },
                     child: Text(
-                      'S\inscrire',
+                      'Se connecter via un réseau social',
                       style: GoogleFonts.poppins(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
-                    onPressed:() => signUp(),
                   ),
-                ),
-                /*BOUTONS*/
-
-                TextButton(
-                  onPressed: () {
-                    // Logique pour réinitialiser le mot de passe, par exemple
-                  },
-                  child: Text(
-                    'Se connecter via un réseau social',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -212,5 +219,6 @@ class _InscriptionState extends State<Inscription> {
     );
   }
 }
+
 
 void setState(Null Function() param0) {}

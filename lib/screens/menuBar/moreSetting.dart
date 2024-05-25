@@ -166,7 +166,7 @@ class _MoreSettingState extends State<MoreSetting> {
             itemBuilder: (context, index) {
               final parking = parkings[index];
               return ListTile(
-                title: Text(parking['nom'] ?? ''),
+                title: Text(parking['name'] ?? ''),
                 subtitle: parking['imageURL'] != null && parking['imageURL'].isNotEmpty
                     ? ExtendedImage.network(
                   parking['imageURL'],
@@ -203,7 +203,7 @@ class _MoreSettingState extends State<MoreSetting> {
 // Fonction pour récupérer les parkings depuis la base de données
 Future<List<Json>?> fetchParkings() async {
   try {
-    return await supabase.from('parking').select('nom, imageURL');
+    return await supabase.from('parking').select('name, imageURL');
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
     logger.e(error.details);
