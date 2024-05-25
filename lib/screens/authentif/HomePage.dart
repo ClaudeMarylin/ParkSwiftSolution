@@ -235,7 +235,7 @@ Set<Marker> _ParkingMarkers = {};
 Future<List<Json>?> fetchParkingsMap() async {
   try {
 
-    return await supabase.from('parking').select('nom, imageURL, latitude, longitude');
+    return await supabase.from('parking').select('name, imageURL, latitude, longitude');
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
     logger.e(error.details);

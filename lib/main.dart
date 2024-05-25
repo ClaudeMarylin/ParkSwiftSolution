@@ -1,3 +1,4 @@
+import 'package:comparking/screens/authentif/HomePage.dart';
 import 'package:comparking/screens/authentif/WelcomePage.dart';
 import 'package:comparking/screens/authentif/loadingScreen.dart';
 import 'package:flutter/material.dart';

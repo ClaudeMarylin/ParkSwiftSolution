@@ -5,10 +5,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<List<Json>?> fetchParkings() async {
   try {
-    return await supabase.from('parking').select('nom, imageURL');
+    return await supabase.from('parking').select('name, imageURL');
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
-    logger.e(error.details);
+    logger.e(error.details);    
     return null;
   } catch (e, stackTrace) {
     logger.e("$e", stackTrace: stackTrace);
