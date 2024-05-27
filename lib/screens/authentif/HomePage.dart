@@ -218,50 +218,6 @@ class _HomeTapState extends State<HomeTap> {
                     ],
                   ),
                 ),
-                // Afficher les résultats de recherche
-                /*FutureBuilder<List<Json>?>(
-                  future: searchParkings(_query),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Erreur: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('Aucun parking trouvé'));
-                    } else {
-                      final parkings = snapshot.data!;
-                      return ListView.builder(
-                        itemCount: parkings.length,
-                        itemBuilder: (context, index) {
-                          final parking = parkings[index];
-                          return ListTile(
-                            title: Text(parking['nom'] ?? ''),
-                            subtitle: parking['imageURL'] != null && parking['imageURL'].isNotEmpty
-                                ? ExtendedImage.network(
-                              parking['imageURL'],
-                              width: 50, // Vous pouvez ajuster la taille de l'image ici
-                              height: 100,
-                              fit: BoxFit.cover,
-                              cache: true,
-                              loadStateChanged: (ExtendedImageState state) {
-                                switch (state.extendedImageLoadState) {
-                                  case LoadState.loading:
-                                    return Center(child: CircularProgressIndicator());
-                                  case LoadState.completed:
-                                    return state.completedWidget;
-                                  case LoadState.failed:
-                                    return Center(child: Icon(Icons.error));
-                                }
-                              },
-                            )
-                                : Text('Aucune image de parking disponible'),
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),*/
-                // Autre contenu de la page ici
               ],
             ),
           ],

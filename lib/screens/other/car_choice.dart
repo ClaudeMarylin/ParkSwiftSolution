@@ -1,22 +1,21 @@
-import 'package:comparking/screens/other/date_reservation.dart';
-import 'package:comparking/screens/other/new_cars.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:comparking/constants/colors.dart';
-// ignore: unused_import
+import 'package:supabase/supabase.dart';
+import 'package:comparking/screens/other/date_reservation.dart';
+import 'package:comparking/screens/other/new_cars.dart';
 import 'package:comparking/main.dart'; // Importation du fichier main.dart
 
 class CarChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          MyAppBar(), // Utilisation de l'appBar définie dans la classe MyAppBar
+      appBar: MyAppBar(), // Utilisation de l'appBar définie dans la classe MyAppBar
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListCarChoice()
-          ], // Affichage de la liste des choix de voitures
+            ListCarChoice() // Affichage de la liste des choix de voitures
+          ],
         ),
       ),
     );
@@ -24,8 +23,7 @@ class CarChoice extends StatelessWidget {
 }
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize =>
-      new Size.fromHeight(50); // Taille préférée de l'appBar
+  Size get preferredSize => Size.fromHeight(50); // Taille préférée de l'appBar
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -67,6 +65,18 @@ class _ListCarChoiceState extends State<ListCarChoice> {
     {'marque': 'Toyota', 'matricule': 'IJ91011KL'},
   ];
 
+  Future<void> _addCarToDatabase(Map<String, String> car) async {
+    final response = await supabase.from('vehicules').insert({
+      'marque': car['marque'],
+      'modele': 'Modèle Placeholder', // Remplacez par le modèle réel si disponible
+      'annee': 2022, // Remplacez par l'année réelle si disponible
+      'couleur': 'Couleur Placeholder', // Remplacez par la couleur réelle si disponible
+      'immatriculation': car['matricule'],
+      'id': supabase.auth.currentUser?.id,
+    }).single();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,15 +88,15 @@ class _ListCarChoiceState extends State<ListCarChoice> {
             return CarsCard(
               // Affichage de la carte de voiture
               carData: car, // Données de la voiture
-              isSelected: car ==
-                  _selectedCar, // Vérification si la voiture est sélectionnée ou non
+              isSelected: car == _selectedCar, // Vérification si la voiture est sélectionnée ou non
               onChanged: (selected) {
                 // Action lorsqu'une voiture est sélectionnée
                 setState(() {
-                  _selectedCar = selected
-                      ? car
-                      : null; // Mise à jour de la voiture sélectionnée
+                  _selectedCar = selected ? car : null; // Mise à jour de la voiture sélectionnée
                 });
+                if (selected) {
+                  _addCarToDatabase(car); // Ajout du véhicule à la base de données
+                }
               },
             );
           }).toList(),
@@ -102,8 +112,7 @@ class _ListCarChoiceState extends State<ListCarChoice> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => NewCars()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => NewCars()));
                   },
                   child: Row(
                     children: [
@@ -123,7 +132,6 @@ class _ListCarChoiceState extends State<ListCarChoice> {
                     ],
                   ),
                 ),
-              
               ],
             ),
           ),
@@ -166,8 +174,7 @@ class _ListCarChoiceState extends State<ListCarChoice> {
 class CarsCard extends StatelessWidget {
   final Map<String, String> carData; // Données de la voiture
   final bool isSelected; // Indique si la voiture est sélectionnée ou non
-  final ValueChanged<bool>
-      onChanged; // Méthode appelée lorsque la sélection de la voiture change
+  final ValueChanged<bool> onChanged; // Méthode appelée lorsque la sélection de la voiture change
 
   CarsCard({
     required this.carData, // Données de la voiture requises
@@ -196,134 +203,18 @@ class CarsCard extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(carData[
-                    'marque']!), // Affichage de l'immatriculation de la voiture
+                Text(carData['marque']!), // Affichage de la marque de la voiture
                 SizedBox(width: 4),
-                Text(carData[
-                    'matricule']!), // Affichage de l'immatriculation de la voiture
+                Text(carData['matricule']!), // Affichage de l'immatriculation de la voiture
               ],
             ),
           ],
         ),
-        controlAffinity: ListTileControlAffinity
-            .trailing, //affiche sur le côté opposé de la vignette au bouton radio.
+        controlAffinity: ListTileControlAffinity.trailing, // Affiche sur le côté opposé de la vignette au bouton radio
         value: carData, // Données de la voiture
-        groupValue: isSelected
-            ? carData
-            : null, // Groupe de la valeur de la voiture sélectionnée
-        onChanged: (selected) => onChanged(
-            selected != null), // Action lorsqu'une voiture est sélectionnée
+        groupValue: isSelected ? carData : null, // Groupe de la valeur de la voiture sélectionnée
+        onChanged: (selected) => onChanged(selected != null), // Action lorsqu'une voiture est sélectionnée
       ),
     );
   }
 }
-
-
-
-
-
-
-/*import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:app_parkswiftsolution/main.dart';
-
-class CarChoice extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: MyAppBar(),
-        body: SingleChildScrollView(
-            child: Column(
-          children: [ListCarChoice()],
-        )));
-  }
-}
-
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize => new Size.fromHeight(50);
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: Colors.white,
-        ),
-        onPressed: null,
-      ),
-      backgroundColor: pBlue,
-      title: Text(
-        'Sélectionner votre véhicule',
-        style: GoogleFonts.nunito(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-      centerTitle: true,
-    );
-  }
-}
-
-class ListCarChoice extends StatelessWidget {
-  final List carsList = [
-    {'marque': 'Renault', 'matricule': 'AB1234CD'},
-    {'marque': 'Renault', 'matricule': 'AB1234CD'},
-    {'marque': 'Renault', 'matricule': 'AB1234CD'},
-    {'marque': 'Renault', 'matricule': 'AB1234CD'},
-    {'marque': 'Renault', 'matricule': 'AB1234CD'},
-    {'marque': 'Renault', 'matricule': 'AB1234CD'},
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-          children: carsList.map((cars) {
-        return CarsCard(cars);
-      }).toList()),
-    );
-  }
-}
-
-class CarsCard extends StatelessWidget {
-  final Map carsData;
-  CarsCard(this.carsData);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      height: 80,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: pBlue),
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.transparent,
-      ),
-      
-      child: RadioListTile<CarsCard>(
-          title: Row(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.access_time_rounded, color: pBlue),
-              SizedBox(width: 4),
-              //const Text('Paypal'),
-            ],
-          ),
-          controlAffinity: ListTileControlAffinity.trailing,//affiche sur le côté opposé de la vignette au bouton radio. 
-          value: ,
-          groupValue: ,
-          onChanged: (? value) {
-            setState(() {
-               = value;
-            });
-          },
-        ),
-    );
-  }
-}*/
-
-/*Container(
-      child: Text(carsData['matricule']),
-    );*/
