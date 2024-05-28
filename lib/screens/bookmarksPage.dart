@@ -431,7 +431,7 @@ class Reservations {
 }
 
 class ReservationModel {
-  final String idReservation;
+  final int idReservation;
   final ParkingModel parking;
   final DateTime dateDebut;
   final DateTime dateFin;

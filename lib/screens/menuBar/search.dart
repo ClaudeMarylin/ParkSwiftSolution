@@ -227,10 +227,14 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           ],
                         ),
-                        trailing: Icon(
+                        trailing: Visibility(
+                          visible: isFavorite,
+                          child: Icon(
                             Icons.bookmark,
-                            color: isFavorite ? Colors.red : Colors.grey,
-                            ),
+                            color: Colors.red
+                            //color: isFavorite ? Colors.red : Colors.grey,
+                            ),)
+                        
                             /*IconButton(
                           onPressed: () {
                             if (isFavorite) {

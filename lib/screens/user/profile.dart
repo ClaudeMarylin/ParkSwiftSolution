@@ -16,6 +16,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<Map<String, dynamic>?> _userProfile;
+  String _editedName = '';
+  bool _isEditingName = false;
 
   @override
   void initState() {
@@ -40,7 +42,10 @@ class _ProfilePageState extends State<ProfilePage> {
       return null;
     }
     try {
-    final profile =  await supabase.from('profiles').select('name, email, phone, profile_image').eq('id', user.id).single();
+    final profile =  await supabase
+    .from('profiles')
+    .select('name, email, phone, profile_image')
+    .eq('id', user.id).single();
     return profile;
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
@@ -53,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
     }
 
-  @override
+
 
 
 
@@ -90,10 +95,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(userData['profile_image'] ?? ''),
+                    GestureDetector(
+                      onTap: () {
+                        // Action lorsque l'utilisateur appuie sur l'image du profil
+                        // Ajoutez ici la navigation ou l'action désirée
+                        //print('Utilisateur non authentifié');
+                         _editName();
+                        
+                      },
+                      child: Center(
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(userData['profile_image'] ?? ''),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -178,6 +192,73 @@ class _ProfilePageState extends State<ProfilePage> {
         },
       ),
     );
+  }
+   void _editName() {
+    setState(() {
+      //_editedName = _userProfile['name'] ?? '';
+      _isEditingName = true;
+    });
+  }
+  void _saveName() {
+    // Ajoutez ici le code pour enregistrer le nouveau nom dans la base de données
+    setState(() {
+      _isEditingName = false;
+    });
+  }
+  void _cancelEditName() {
+    setState(() {
+      //_editedName = _userProfile['name'] ?? '';
+      _isEditingName = false;
+    });
+  }
+  Widget _buildNameField() {
+    return TextFormField(
+      initialValue: _editedName,
+      onChanged: (value) {
+        setState(() {
+          _editedName = value;
+        });
+      },
+      decoration: InputDecoration(
+        hintText: 'Entrez votre nom',
+        labelText: 'Nom',
+      ),
+    );
+  }
+   Widget _buildNameSection(Map<String, dynamic> userData) {
+    if (_isEditingName) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildNameField(),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: _saveName,
+                child: Text('Enregistrer'),
+              ),
+              SizedBox(width: 10),
+              TextButton(
+                onPressed: _cancelEditName,
+                child: Text('Annuler'),
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Center(
+        child: Text(
+          _editedName,
+          style: GoogleFonts.nunito(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
   }
 }
 
