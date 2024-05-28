@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:comparking/helper/helper_functions.dart';
 import 'package:comparking/main.dart';
 import 'package:extended_image/extended_image.dart';
@@ -121,22 +119,22 @@ class _HomeTapState extends State<HomeTap> {
       const CameraPosition(target: LatLng(0, 0), zoom: 12);
   Set<Marker> _ParkingMarkers = {};
 
-  String _query = '';
+  //String _query = '';
 
-  late Future<List<Json>?> _parkings;
+  //late Future<List<Json>?> _parkings;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-    _parkings = fetchParkings();
+   // _parkings = fetchParkings();
   }
 
-  Future<List<Json>?> searchParkings(String query) {
+  /*Future<List<Json>?> searchParkings(String query) {
     return _parkings.then((value) => value!.where((parking) {
       return parking['nom'].toLowerCase().contains(query.toLowerCase());
     }).toList());
-  }
+  }*/
 
   Future<void> _getCurrentLocation() async {
     Position? currentPosition = await LocationService.getCurrentLocation();
@@ -204,20 +202,79 @@ class _HomeTapState extends State<HomeTap> {
                       Expanded(
                         child: CustomTextFormField(
                           hint: "Rechercher",
-                          prefixIcon: IconlyBroken.search,
+                          prefixIcon: IconlyBroken.discovery,                          
                           filled: true,
                           enabled: true,
-                          onChanged: (value) {
-                            setState(() {
-                              _query = value;
-                            });
+                          onChanged: (value) {                            
                           },                        
                         ),
                       ),
-
+                      GestureDetector(
+                        onTap:  () async {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchPage(),
+                              ),
+                            );
+                        },
+                        
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.black,
+                            size: 30,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                // Afficher les résultats de recherche
+                /*FutureBuilder<List<Json>?>(
+                  future: searchParkings(_query),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Erreur: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('Aucun parking trouvé'));
+                    } else {
+                      final parkings = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: parkings.length,
+                        itemBuilder: (context, index) {
+                          final parking = parkings[index];
+                          return ListTile(
+                            title: Text(parking['nom'] ?? ''),
+                            subtitle: parking['imageURL'] != null && parking['imageURL'].isNotEmpty
+                                ? ExtendedImage.network(
+                              parking['imageURL'],
+                              width: 50, // Vous pouvez ajuster la taille de l'image ici
+                              height: 100,
+                              fit: BoxFit.cover,
+                              cache: true,
+                              loadStateChanged: (ExtendedImageState state) {
+                                switch (state.extendedImageLoadState) {
+                                  case LoadState.loading:
+                                    return Center(child: CircularProgressIndicator());
+                                  case LoadState.completed:
+                                    return state.completedWidget;
+                                  case LoadState.failed:
+                                    return Center(child: Icon(Icons.error));
+                                }
+                              },
+                            )
+                                : Text('Aucune image de parking disponible'),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),*/
+                // Autre contenu de la page ici
               ],
             ),
           ],
@@ -228,11 +285,11 @@ class _HomeTapState extends State<HomeTap> {
 }
 
 // Fonction pour récupérer les parkings depuis la base de données
-Future<List<Json>?> fetchParkings() async {
+/*Future<List<Json>?> fetchParkings() async {
   try {
     return await supabase
-        .from('parking')
-        .select('nom');
+    .from('parking')
+    .select('nom');
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
     logger.e(error.details);
@@ -241,4 +298,4 @@ Future<List<Json>?> fetchParkings() async {
     logger.e("$e", stackTrace: stackTrace);
     return null;
   }
-}
+}*/

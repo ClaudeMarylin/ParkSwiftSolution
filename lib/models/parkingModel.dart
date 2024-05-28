@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ParkingModel {
+  final int? id_parking;
   final String? nom;
   final String? adresse;
   final String? imageURL;
@@ -10,6 +11,7 @@ class ParkingModel {
   final String? devise;
 
   ParkingModel({
+    this.id_parking,
     this.nom,
     this.adresse,
     this.imageURL,
@@ -21,6 +23,7 @@ class ParkingModel {
 
   factory ParkingModel.fromJson(Map<String, dynamic> json) {
     return ParkingModel(
+      id_parking: json['id'] as int?,
       nom: json['nom'] as String?,
       adresse: json['adresse'] as String?,
       imageURL: json['imageURL'] as String?,
@@ -33,6 +36,7 @@ class ParkingModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id_parking,
       'nom': nom,
       'adresse': adresse,
       'imageURL': imageURL,

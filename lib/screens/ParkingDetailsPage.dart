@@ -2,6 +2,7 @@ import 'package:comparking/models/parkingModel.dart';
 import 'package:comparking/screens/bookmarksPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../constants/colors.dart';
 import '../models/searchPakingModel.dart';
 import 'package:comparking/screens/other/car_choice.dart';
@@ -12,6 +13,20 @@ class ParkingDetailsPage extends StatelessWidget {
   final ParkingModel parking;
 
   const ParkingDetailsPage({Key? key, required this.parking}) : super(key: key);
+
+ Future<void> addToFavorites(ParkingModel parking) async {
+    // Récupérer l'UUID de l'utilisateur connecté (exemple)
+    final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
+
+    if (userId.isEmpty) {
+      // Gérer le cas où l'utilisateur n'est pas authentifié
+      print('Utilisateur non authentifié');
+      return;
+    }
+
+    // Ajouter aux favoris
+    await Bookmarks.addFavorite(parking, userId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +53,7 @@ class ParkingDetailsPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
+               addToFavorites(parking); // Ajoute le parking aux favoris
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -189,38 +205,3 @@ class ParkingDetailsPage extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-//
-//
-// class ParkingDetailsPage extends StatelessWidget {
-//   final ParkingModel parking;
-//
-//   const ParkingDetailsPage({Key? key, required this.parking}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // Utilisez les détails du parking pour afficher les informations sur cette page
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(parking.nom),
-//         backgroundColor: Colors.white,
-//         leading: IconButton(
-//           icon: const Icon(
-//             Icons.arrow_back,
-//             color: Colors.black,
-//           ),
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//           },
-//         ),
-//       ),
-//       body: Center(
-//         child: Text("Page de détails du parking ${parking.nom}"),
-//       ),
-//     );
-//   }
-// }

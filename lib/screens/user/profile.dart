@@ -1,3 +1,4 @@
+import 'package:comparking/screens/bookmarksPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -39,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
       return null;
     }
     try {
-    final profile =  await supabase.from('profiles').select('name, email, phone').eq('id', user.id).single();
+    final profile =  await supabase.from('profiles').select('name, email, phone, profile_image').eq('id', user.id).single();
     return profile;
   } on PostgrestException catch (error, stackTrace) {
     logger.e(error.message, stackTrace: stackTrace);
@@ -92,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Center(
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(userData['profile_image_url'] ?? ''),
+                        backgroundImage: NetworkImage(userData['profile_image'] ?? ''),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -133,9 +134,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     Divider(),
                     ListTile(
-                      leading: Icon(Icons.settings),
+                      leading: Icon(Icons.bookmark),
                       title: Text(
-                        'Paramètres du compte',
+                        'Mes favoris',
                         style: GoogleFonts.nunito(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -143,6 +144,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       onTap: () {
                         // Action pour naviguer vers les paramètres du compte
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Bookmarkspage(),
+                          ),
+                        );
                       },
                     ),
                     Divider(),

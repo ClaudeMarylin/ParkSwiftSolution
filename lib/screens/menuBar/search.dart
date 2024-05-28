@@ -8,6 +8,7 @@ import '../../constants/colors.dart'; // Fichier de couleurs personnalisées
 import '../../helper/helper_functions.dart'; // Fonctions d'aide personnalisées
 import '../../main.dart'; // Point d'entrée principal de l'application
 import '../../models/searchPakingModel.dart';
+import '../bookmarksPage.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -22,12 +23,19 @@ class _SearchPageState extends State<SearchPage> {
 
   void updateList(String value) async {
     try {
-      var res = await supabase.from('parking').select('nom, adresse, imageURL, places_disponibles, description, tarif, devise').textSearch('nom', value);
+      var res = await supabase
+          .from('parking')
+          .select(
+              'id_parking,nom, adresse, imageURL, places_disponibles, description, tarif, devise')
+          .or(('nom.ilike.%$value%, adresse.ilike.%$value%')) 
+          //.textSearch('nom', value)
+          ;
 
       logger.d(res);
 
       List<ParkingModel> parkings = res.map<ParkingModel>((data) {
         return ParkingModel(
+          id_parking: data['id_parking'] as int?,
           nom: data['nom'] as String?,
           adresse: data['adresse'] as String?,
           imageURL: data['imageURL'] as String?,
@@ -86,31 +94,59 @@ class _SearchPageState extends State<SearchPage> {
             const SizedBox(
               height: 20.0,
             ),
-            TextField(
-              style: const TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: searchBlue,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide.none,
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    style: const TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: searchBlue,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: "Rechercher un parking",
+                      hintStyle: TextStyle(color: Colors.white70),
+                      /*prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      ),*/
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _query = value;
+                      });
+                    },
+                    onSubmitted: (value) {
+                      updateList(value);
+                    },
+                  ),
                 ),
-                hintText: "Rechercher un parking",
-                hintStyle: TextStyle(color: Colors.white70),
-                prefixIcon: Icon(
-                  Icons.search,
+                Material(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
                   color: Colors.white,
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _query = value;
-                });
-              },
-              onSubmitted: (value) {
-                updateList(value);
-              },
-            ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      // Action lors de l'appui sur le bouton de recherche
+                      updateList(_query);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.black,
+                        size: 30, // Taille de l'icône
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),           
+            
             const SizedBox(
               height: 20.0,
             ),
@@ -119,13 +155,16 @@ class _SearchPageState extends State<SearchPage> {
                 itemCount: mainParkingsList.length,
                 itemBuilder: (context, index) {
                   final parking = mainParkingsList[index];
+                  bool isFavorite = Bookmarks.favoritesList
+                      .any((fav) => fav.id_parking == parking.id_parking);
                   return GestureDetector(
                     onTap: () {
                       // Naviguer vers la page de détails du parking
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ParkingDetailsPage(parking: parking),
+                          builder: (context) =>
+                              ParkingDetailsPage(parking: parking),
                         ),
                       );
                     },
@@ -137,28 +176,29 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(16.0),
-                        leading: parking.imageURL != null && parking.imageURL!.isNotEmpty
+                        leading: parking.imageURL != null &&
+                                parking.imageURL!.isNotEmpty
                             ? ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Image.network(
-                            parking.imageURL!,
-                            width: 50.0,
-                            height: 50.0,
-                            fit: BoxFit.cover,
-                          ),
-                        )
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.network(
+                                  parking.imageURL!,
+                                  width: 50.0,
+                                  height: 50.0,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
                             : Container(
-                          width: 50.0,
-                          height: 50.0,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: const Icon(
-                            Icons.local_parking,
-                            color: Colors.white,
-                          ),
-                        ),
+                                width: 50.0,
+                                height: 50.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: const Icon(
+                                  Icons.local_parking,
+                                  color: Colors.white,
+                                ),
+                              ),
                         title: Text(
                           parking.nom ?? 'Nom non disponible',
                           style: GoogleFonts.lato(
@@ -166,13 +206,50 @@ class _SearchPageState extends State<SearchPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        subtitle: Text(
-                          parking.adresse ?? 'Adresse non disponible',
-                          style: GoogleFonts.lato(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.normal,
-                          ),
+                        subtitle: Row(
+                          children: [
+                            Text(
+                              parking.adresse ?? 'Adresse non disponible',                          
+                              style: GoogleFonts.lato(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                           const SizedBox(
+                              width: 20.0,
+                            ),
+                            Text(
+                              '${parking.placesDisponibles.toString() ?? '0'} places',                          
+                              style: GoogleFonts.lato(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
                         ),
+                        trailing: Icon(
+                            Icons.bookmark,
+                            color: isFavorite ? Colors.red : Colors.grey,
+                            ),
+                            /*IconButton(
+                          onPressed: () {
+                            if (isFavorite) {
+                              // Remove from favorites
+                              setState(() {
+                                Bookmarks.favoritesList.remove(parking);
+                              });
+                            } else {
+                              // Add to favorites
+                              final userId = supabase.auth.currentUser?.id ?? '';
+                              Bookmarks.addFavorite(parking, userId);
+                              setState(() {});
+                            }
+                          },
+                          icon: Icon(
+                            Icons.bookmark,
+                            color: isFavorite ? Colors.red : Colors.grey,
+                          ),
+                        ),*/
                       ),
                     ),
                   );
